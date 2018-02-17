@@ -40,4 +40,12 @@ public class BusinessManager
 	public Users addUser(Users user) {		
 		return user;
 	}
+	
+	public Users updateUser(String userId, String name) {
+		Users user = new Users();
+		user.setId(userId);
+		user.setName(name);
+		
+		return user;
+	}
 }
