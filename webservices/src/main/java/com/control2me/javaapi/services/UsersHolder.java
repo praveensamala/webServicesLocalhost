@@ -10,13 +10,13 @@ public class UsersHolder implements Serializable
 	private static final long serialVersionId = 1L;
 	
 	@XmlElement(name="id")
-	private List<Users> userslist;
+	private List<User> userslist;
 
-	public List<Users> getUserslist() {
+	public List<User> getUserslist() {
 		return userslist;
 	}
 
-	public void setUserslist(List<Users> userslist) {
+	public void setUserslist(List<User> userslist) {
 		this.userslist = userslist;
 	}
 }

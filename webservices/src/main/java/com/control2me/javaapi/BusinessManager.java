@@ -2,7 +2,7 @@ package com.control2me.javaapi;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.control2me.javaapi.services.Users;
+import com.control2me.javaapi.services.User;
 public class BusinessManager
 {
 	public static BusinessManager INSTANCE = new BusinessManager();
@@ -14,38 +14,31 @@ public class BusinessManager
 		
 	}
 	
-	public Users findUser(String userId) {
-		Users user = new Users();
-		user.setId(userId);
-		user.setName("Tom");
+	public List<User> findUser(String userId) {
 		
-		return user;
+		List<User> users = DataManager.getInstance().mongoGetUser(userId);
+		return users;
 	}
 	
-	public List<Users> allUsers() {
-		List<Users> allUsersList = new ArrayList<Users>();
-		Users user1 = new Users();
-		Users user2 = new Users();
+	public List<User> allUsers() {
+		List<User> allUsersList = new ArrayList<User>();
 		
-		user1.setId("123");
-		user1.setName("Micheal");
-		user2.setId("456");
-		user2.setName("Jackson");
-		allUsersList.add(user1);
-		allUsersList.add(user2);
-		
+		allUsersList = DataManager.getInstance().mongoAllUsers();
 		return allUsersList;
 	}
 	
-	public Users addUser(Users user) {		
-		return user;
+	public User addUser(User user) {
+		User updateduser = DataManager.getInstance().mongoAddUser(user);
+		return updateduser;
 	}
 	
-	public Users updateUser(String userId, String name) {
-		Users user = new Users();
-		user.setId(userId);
-		user.setName(name);
-		
-		return user;
+	public String updateUser(String userid, String name, String location) {
+		String responsemsg = DataManager.getInstance().mongoUpdateUser(userid, name, location);
+		return responsemsg;
+	}
+	
+	public String deleteUser(String userid) {
+		String responsemsg = DataManager.getInstance().mongoDeleteUser(userid);
+		return responsemsg;
 	}
 }

@@ -3,6 +3,7 @@ package com.control2me.javaapi.services;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,7 +33,7 @@ public class UsersResource
 	@Path("/{userId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value="find user", notes="This API retrieves the public information")
-	public Response getUserById(@DefaultValue("xyz") @PathParam("userId") String userId)
+	public Response getUserById(@PathParam("userId") String userId)
 	{
 		log.info("in getUserById method for testing");
 		
@@ -41,8 +42,11 @@ public class UsersResource
 		}
 		
 		try {
-			Users user = BusinessManager.getInstance().findUser(userId);
-			return Response.status(Response.Status.OK).entity(user).build();
+			List<User> usersList = BusinessManager.getInstance().findUser(userId);
+			UsersHolder usersHolder = new UsersHolder();
+			usersHolder.setUserslist(usersList);
+			
+			return Response.status(Response.Status.OK).entity(usersHolder).build();
 		}
 		catch (Exception e) {
 			
@@ -60,7 +64,7 @@ public class UsersResource
 		log.info("in getAllUsers method for testing");
 		
 		try {
-			List<Users> usersList = BusinessManager.getInstance().allUsers();
+			List<User> usersList = BusinessManager.getInstance().allUsers();
 			UsersHolder usersHolder = new UsersHolder();
 			usersHolder.setUserslist(usersList);
 			
@@ -78,12 +82,19 @@ public class UsersResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value="adduser", notes="This API adds new user information")
-	public Response addUser(Users user)
+	public Response addUser(User user)
 	{
 		log.info("in addUser method for testing");
 		
+		if ((user.getId()==null || user.getId().isEmpty()) ||
+			(user.getName()==null || user.getName().isEmpty()) || 
+			(user.getLocation()==null || user.getLocation().isEmpty()))
+		{
+			return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Enter values for id, name and location\", \"status\" : \"FAIL\"}").build();
+		}
+		
 		try {
-			Users newuser = BusinessManager.getInstance().addUser(user);
+			User newuser = BusinessManager.getInstance().addUser(user);
 			
 			return Response.status(Response.Status.CREATED).entity(newuser).build();
 		}
@@ -93,42 +104,70 @@ public class UsersResource
 		
 		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Empty users\", \"status\" : \"FAIL\"}").build();
 	}
-	/*public Users addUser(Users user)
-	{
-		log.info("in adduser method for testing");
-		Users newuser = BusinessManager.getInstance().addUser(user);
-		return newuser;
-	}*/
 	
 	@PUT
 	@Path("/updateuser/{userId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value="updateuser", notes="This API updates existing user information")
-	public Response updateUser(@PathParam("userId") String userId, String jsonString)
+	public String updateUser(@PathParam("userId") String userId, String jsonString)
 	{
 		log.info("in updateuser method for testing");
 		
+		if ((userId==null || userId.isEmpty()) ||
+			(jsonString==null || jsonString.isEmpty()))
+		{
+			return "Enter values for id, name and location";
+		}
+		
 		String name;
+		String location;
 		
 		try {
 			Object obj = JSONValue.parse(jsonString);
 			JSONObject jsonobj = (JSONObject) obj;
 			name = (String) jsonobj.get("name");
+			location = (String) jsonobj.get("location");
 		}
 		catch (Exception e){
-			return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\":\"Invalid or missing fields error\", \"status\":\"FAIL\"}").build();
+			return "Invalid or missing fields error";
 		}
 		
 		try {
-			Users newuser = BusinessManager.getInstance().updateUser(userId, name);
-			
-			return Response.status(Response.Status.CREATED).entity(newuser).build();
+			String responsemsg = BusinessManager.getInstance().updateUser(userId, name, location);
+			return responsemsg;
 		}
 		catch (Exception e) {
 			
 		}
 		
-		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Empty users\", \"status\" : \"FAIL\"}").build();
+		return "Empty users";
+	}
+	
+	
+	@DELETE
+	@Path("/deleteuser/{userId}")
+	//@Consumes(MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value="updateuser", notes="This API updates existing user information")
+	public String deleteUser(@PathParam("userId") String userId)
+	{
+		log.info("in deleteuser method for testing");
+		
+		if (userId==null || userId.isEmpty())
+		{
+			return "Enter values for id, name and location";
+		}
+		
+		try {
+			String responsemsg = BusinessManager.getInstance().deleteUser(userId);
+			
+			return responsemsg;
+		}
+		catch (Exception e) {
+			
+		}
+		
+		return "Empty users";
 	}
 }
