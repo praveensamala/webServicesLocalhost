@@ -52,7 +52,7 @@ public class UsersResource
 			
 		}
 		
-		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Empty userId\", \"status\" : \"FAIL\"}").build();
+		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Invalid userId\", \"status\" : \"FAIL\"}").build();
 	}
 	
 	@GET
@@ -74,7 +74,7 @@ public class UsersResource
 			
 		}
 		
-		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Empty users\", \"status\" : \"FAIL\"}").build();
+		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Invalid Request\", \"status\" : \"FAIL\"}").build();
 	}
 	
 	@POST
@@ -90,7 +90,7 @@ public class UsersResource
 			(user.getName()==null || user.getName().isEmpty()) || 
 			(user.getLocation()==null || user.getLocation().isEmpty()))
 		{
-			return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Enter values for id, name and location\", \"status\" : \"FAIL\"}").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"User Id, Name and Location details are mandatory. Plese provide valid Enter valid User Id, Name and Location details\", \"status\" : \"FAIL\"}").build();
 		}
 		
 		try {
@@ -102,7 +102,7 @@ public class UsersResource
 			
 		}
 		
-		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Empty users\", \"status\" : \"FAIL\"}").build();
+		return Response.status(Response.Status.BAD_REQUEST).entity("{\"error\" : \"Invalid request\", \"status\" : \"FAIL\"}").build();
 	}
 	
 	@PUT
@@ -117,7 +117,7 @@ public class UsersResource
 		if ((userId==null || userId.isEmpty()) ||
 			(jsonString==null || jsonString.isEmpty()))
 		{
-			return "Enter values for id, name and location";
+			return "User Id is mandatory. Please provide the valid User Id to process";
 		}
 		
 		String name;
@@ -130,7 +130,7 @@ public class UsersResource
 			location = (String) jsonobj.get("location");
 		}
 		catch (Exception e){
-			return "Invalid or missing fields error";
+			return "Received error during processing - update request";
 		}
 		
 		try {
@@ -141,7 +141,7 @@ public class UsersResource
 			
 		}
 		
-		return "Empty users";
+		return "Received error during processing - update request";
 	}
 	
 	
@@ -156,7 +156,7 @@ public class UsersResource
 		
 		if (userId==null || userId.isEmpty())
 		{
-			return "Enter values for id, name and location";
+			return "User Id is mandatory. Please provide the valid User Id to process";
 		}
 		
 		try {
@@ -168,6 +168,6 @@ public class UsersResource
 			
 		}
 		
-		return "Empty users";
+		return "Received error during processing - update request";
 	}
 }

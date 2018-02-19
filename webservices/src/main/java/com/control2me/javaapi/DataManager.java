@@ -115,14 +115,18 @@ public class DataManager
 		newDocument.put("name", name);
 		newDocument.put("location", location);
 
+		if ((name.isEmpty() || name == null) || (location.isEmpty() || location == null)) {
+			return "User Name and Location details are mandatory, Please provide the valid User Name and Location details";
+		}
+		
 		BasicDBObject searchQuery = new BasicDBObject().append("id", userid);
 		
 		WriteResult wr = dbcollection.update(searchQuery, newDocument);
 		if (wr.getN()==1) {
-			return "User updated successfully";
+			return "User "+userid+" details updated successfully";
 		}
 		else {
-			return "Searching user not found";
+			return "There are no records with the user id "+userid+", None of the records updated";
 		}
 	}
 	
@@ -131,12 +135,13 @@ public class DataManager
 		allquery.append("id", userid);
 
 		WriteResult wr = dbcollection.remove(allquery);
+		System.out.println("\n\n*****removed number : "+wr.getN());
 		
-		if (wr.getN()==1) {
-			return "User deleted successfully";
+		if (wr.getN() > 0) {
+			return wr.getN()+" Matching User Ids deleted successfully";
 		}
 		else {
-			return "Searching user not found";
+			return "There are no records with the user id "+userid+", None of the records deleted";
 		}
 	}
 }
