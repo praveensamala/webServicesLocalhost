@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 @Path("/users")
 @Api(value="/users", description="manage users")
 public class UsersResource
-{
+{	
 	private static final Logger log = Logger.getLogger(UsersResource.class.getName(), UsersResource.class);
 	
 	@GET
@@ -110,9 +110,10 @@ public class UsersResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	//@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value="updateuser", notes="This API updates existing user information")
-	public String updateUser(@PathParam("userId") String userId, String jsonString)
+	public String updateUser(@PathParam("userId") @DefaultValue("InvalidRequest_NoUserId_Provided") String userId, @DefaultValue("{\"null\":\"null\"}") String jsonString)
 	{
 		log.info("in updateuser method for testing");
+		System.out.println("\n\n*****in updateuser method for testing");
 		
 		if ((userId==null || userId.isEmpty()) ||
 			(jsonString==null || jsonString.isEmpty()))
